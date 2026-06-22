@@ -1,0 +1,12 @@
+{
+  "name": "ketamineui-docs",
+  "version": "1.0.0",
+  "description": "KetamineUI Documentation Site",
+  "scripts": {
+    "start": "npx serve . -p $PORT",
+    "build": "echo 'Static site, no build needed'"
+  },
+  "dependencies": {
+    "serve": "^14.2.3"
+  }
+}
