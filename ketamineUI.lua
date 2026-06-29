@@ -91,8 +91,8 @@ function Ketamine:CreateWindow(config)
 
     local main = Instance.new("Frame")
     main.Name = "Main"
-    main.Size = UDim2.new(0, 560, 0, 380)
-    main.Position = UDim2.new(0.5, -280, 0.5, -190)
+    main.Size = UDim2.new(0, 560, 0, 400) -- increased height to accommodate footer
+    main.Position = UDim2.new(0.5, -280, 0.5, -200)
     main.BackgroundColor3 = COLORS.bg_dark
     main.BorderSizePixel = 0
     main.Parent = gui
@@ -160,10 +160,23 @@ function Ketamine:CreateWindow(config)
     tabLayout.Parent = tabContainer
 
     local contentArea = Instance.new("Frame")
-    contentArea.Size = UDim2.new(1, -170, 1, -20)
+    contentArea.Size = UDim2.new(1, -170, 1, -40) -- leave room for footer
     contentArea.Position = UDim2.new(0, 165, 0, 10)
     contentArea.BackgroundTransparency = 1
     contentArea.Parent = main
+
+    -- LIBRARY FOOTER
+    local footer = Instance.new("TextLabel")
+    footer.Size = UDim2.new(1, -170, 0, 20)
+    footer.Position = UDim2.new(0, 165, 1, -25)
+    footer.BackgroundTransparency = 1
+    footer.Text = "Ketamine Hub Library v1.0"
+    footer.TextColor3 = COLORS.text_dim
+    footer.Font = Enum.Font.Gotham
+    footer.TextSize = 11
+    footer.TextXAlignment = Enum.TextXAlignment.Right
+    footer.TextYAlignment = Enum.TextYAlignment.Bottom
+    footer.Parent = main
 
     local WindowObj = { Tabs = {} }
 
@@ -215,45 +228,19 @@ function Ketamine:CreateWindow(config)
             tabContent.Visible = true
         end
 
-        local TabObj = {}
-
-        function TabObj:CreateSection(secName)
-            local lbl = Instance.new("TextLabel")
-            lbl.Size = UDim2.new(1, 0, 0, 25)
-            lbl.BackgroundTransparency = 1
-            lbl.Text = " " .. secName
-            lbl.TextColor3 = COLORS.purple_light
-            lbl.Font = Enum.Font.GothamBold
-            lbl.TextSize = 14
-            lbl.TextXAlignment = Enum.TextXAlignment.Left
-            lbl.Parent = tabContent
-        end
-
-        function TabObj:CreateLabel(text)
-            local lbl = Instance.new("TextLabel")
-            lbl.Size = UDim2.new(1, -10, 0, 20)
-            lbl.BackgroundTransparency = 1
-            lbl.Text = text
-            lbl.TextColor3 = COLORS.text_secondary
-            lbl.Font = Enum.Font.GothamMedium
-            lbl.TextSize = 13
-            lbl.TextXAlignment = Enum.TextXAlignment.Left
-            lbl.TextWrapped = true
-            lbl.Parent = tabContent
-            lbl.Size = UDim2.new(1, -10, 0, lbl.TextBounds.Y + 5)
-        end
-        TabObj.CreateParagraph = TabObj.CreateLabel
-
-        function TabObj:CreateButton(bConfig)
+        -- -------------------------------------------------------------
+        -- Internal element creators (accept a parent frame)
+        -- -------------------------------------------------------------
+        local function createButton(parent, bConfig)
             local btn = Instance.new("TextButton")
-            btn.Size = UDim2.new(1, -10, 0, 36)
+            btn.Size = UDim2.new(1, 0, 0, 36)
             btn.BackgroundColor3 = COLORS.bg_input
             btn.Text = bConfig.Name or "Button"
             btn.TextColor3 = COLORS.text_primary
             btn.Font = Enum.Font.GothamMedium
             btn.TextSize = 13
             btn.AutoButtonColor = false
-            btn.Parent = tabContent
+            btn.Parent = parent
             makeCorner(btn, 6)
             makeStroke(btn)
 
@@ -264,7 +251,7 @@ function Ketamine:CreateWindow(config)
             btn.MouseButton1Click:Connect(bConfig.Callback or function() end)
         end
 
-        function TabObj:CreateToggle(tConfig)
+        local function createToggle(parent, tConfig)
             local flag = tConfig.Flag
             local state = tConfig.CurrentValue or false
             if flag and ConfigData[flag] ~= nil then state = ConfigData[flag] end
@@ -272,11 +259,11 @@ function Ketamine:CreateWindow(config)
             local cb = tConfig.Callback or function() end
 
             local frame = Instance.new("TextButton")
-            frame.Size = UDim2.new(1, -10, 0, 36)
+            frame.Size = UDim2.new(1, 0, 0, 36)
             frame.BackgroundColor3 = COLORS.bg_input
             frame.Text = ""
             frame.AutoButtonColor = false
-            frame.Parent = tabContent
+            frame.Parent = parent
             makeCorner(frame, 6)
 
             local lbl = Instance.new("TextLabel")
@@ -315,7 +302,7 @@ function Ketamine:CreateWindow(config)
             }
         end
 
-        function TabObj:CreateSlider(sConfig)
+        local function createSlider(parent, sConfig)
             local flag = sConfig.Flag
             local min = sConfig.Min or 0
             local max = sConfig.Max or 100
@@ -326,9 +313,9 @@ function Ketamine:CreateWindow(config)
             local cb = sConfig.Callback or function() end
 
             local frame = Instance.new("Frame")
-            frame.Size = UDim2.new(1, -10, 0, 54)
+            frame.Size = UDim2.new(1, 0, 0, 54)
             frame.BackgroundColor3 = COLORS.bg_input
-            frame.Parent = tabContent
+            frame.Parent = parent
             makeCorner(frame, 6)
 
             local lbl = Instance.new("TextLabel")
@@ -417,7 +404,7 @@ function Ketamine:CreateWindow(config)
             }
         end
 
-        function TabObj:CreateDropdown(dConfig)
+        local function createDropdown(parent, dConfig)
             local flag = dConfig.Flag
             local options = dConfig.Options or {}
             local current = dConfig.CurrentOption or {}
@@ -431,10 +418,10 @@ function Ketamine:CreateWindow(config)
             local zIdx = LayerCounter
 
             local frame = Instance.new("Frame")
-            frame.Size = UDim2.new(1, -10, 0, 44)
+            frame.Size = UDim2.new(1, 0, 0, 44)
             frame.BackgroundColor3 = COLORS.bg_input
             frame.ZIndex = zIdx
-            frame.Parent = tabContent
+            frame.Parent = parent
             makeCorner(frame, 6)
 
             local lbl = Instance.new("TextLabel")
@@ -493,12 +480,12 @@ function Ketamine:CreateWindow(config)
                 if isOpen then
                     local h = math.clamp(#options * 30 + 4, 0, 120)
                     tween(dropContainer, {Size = UDim2.new(1, 0, 0, h)}, 0.2)
-                    tween(frame, {Size = UDim2.new(1, -10, 0, 44 + h + 8)}, 0.2)
+                    tween(frame, {Size = UDim2.new(1, 0, 0, 44 + h + 8)}, 0.2)
                 else
                     tween(dropContainer, {Size = UDim2.new(1, 0, 0, 0)}, 0.2).Completed:Connect(function()
                         if not isOpen then dropContainer.Visible = false end
                     end)
-                    tween(frame, {Size = UDim2.new(1, -10, 0, 44)}, 0.2)
+                    tween(frame, {Size = UDim2.new(1, 0, 0, 44)}, 0.2)
                 end
             end
             openBtn.MouseButton1Click:Connect(toggleDrop)
@@ -557,7 +544,7 @@ function Ketamine:CreateWindow(config)
             }
         end
 
-        function TabObj:CreateInput(iConfig)
+        local function createInput(parent, iConfig)
             local flag = iConfig.Flag
             local text = iConfig.CurrentValue or ""
             if flag and ConfigData[flag] ~= nil then text = ConfigData[flag] end
@@ -565,9 +552,9 @@ function Ketamine:CreateWindow(config)
             local cb = iConfig.Callback or function() end
 
             local frame = Instance.new("Frame")
-            frame.Size = UDim2.new(1, -10, 0, 44)
+            frame.Size = UDim2.new(1, 0, 0, 44)
             frame.BackgroundColor3 = COLORS.bg_input
-            frame.Parent = tabContent
+            frame.Parent = parent
             makeCorner(frame, 6)
 
             local lbl = Instance.new("TextLabel")
@@ -604,7 +591,7 @@ function Ketamine:CreateWindow(config)
             task.spawn(function() cb(text) end)
         end
 
-        function TabObj:CreateKeybind(kConfig)
+        local function createKeybind(parent, kConfig)
             local flag = kConfig.Flag
             local key = kConfig.CurrentKeybind or "E"
             if flag and ConfigData[flag] ~= nil then key = ConfigData[flag] end
@@ -612,9 +599,9 @@ function Ketamine:CreateWindow(config)
             local cb = kConfig.Callback or function() end
 
             local frame = Instance.new("Frame")
-            frame.Size = UDim2.new(1, -10, 0, 36)
+            frame.Size = UDim2.new(1, 0, 0, 36)
             frame.BackgroundColor3 = COLORS.bg_input
-            frame.Parent = tabContent
+            frame.Parent = parent
             makeCorner(frame, 6)
 
             local lbl = Instance.new("TextLabel")
@@ -658,6 +645,138 @@ function Ketamine:CreateWindow(config)
                     cb()
                 end
             end)
+        end
+
+        local function createLabel(parent, text)
+            local lbl = Instance.new("TextLabel")
+            lbl.Size = UDim2.new(1, 0, 0, 20)
+            lbl.BackgroundTransparency = 1
+            lbl.Text = text
+            lbl.TextColor3 = COLORS.text_secondary
+            lbl.Font = Enum.Font.GothamMedium
+            lbl.TextSize = 13
+            lbl.TextXAlignment = Enum.TextXAlignment.Left
+            lbl.TextWrapped = true
+            lbl.Parent = parent
+            lbl.Size = UDim2.new(1, 0, 0, lbl.TextBounds.Y + 5)
+        end
+
+        -- -------------------------------------------------------------
+        -- Public Tab methods (add to tabContent)
+        -- -------------------------------------------------------------
+        local TabObj = {}
+
+        function TabObj:CreateSection(secName)
+            local lbl = Instance.new("TextLabel")
+            lbl.Size = UDim2.new(1, 0, 0, 25)
+            lbl.BackgroundTransparency = 1
+            lbl.Text = " " .. secName
+            lbl.TextColor3 = COLORS.purple_light
+            lbl.Font = Enum.Font.GothamBold
+            lbl.TextSize = 14
+            lbl.TextXAlignment = Enum.TextXAlignment.Left
+            lbl.Parent = tabContent
+        end
+
+        function TabObj:CreateLabel(text)
+            createLabel(tabContent, text)
+        end
+        TabObj.CreateParagraph = TabObj.CreateLabel
+
+        function TabObj:CreateButton(bConfig)
+            createButton(tabContent, bConfig)
+        end
+
+        function TabObj:CreateToggle(tConfig)
+            return createToggle(tabContent, tConfig)
+        end
+
+        function TabObj:CreateSlider(sConfig)
+            return createSlider(tabContent, sConfig)
+        end
+
+        function TabObj:CreateDropdown(dConfig)
+            return createDropdown(tabContent, dConfig)
+        end
+
+        function TabObj:CreateInput(iConfig)
+            createInput(tabContent, iConfig)
+        end
+
+        function TabObj:CreateKeybind(kConfig)
+            createKeybind(tabContent, kConfig)
+        end
+
+        -- -------------------------------------------------------------
+        -- NEW: GroupBox
+        -- -------------------------------------------------------------
+        function TabObj:CreateGroupBox(gConfig)
+            local title = gConfig.Name or "Group"
+
+            local frame = Instance.new("Frame")
+            frame.Size = UDim2.new(1, 0, 0, 0)  -- auto-sized vertically
+            frame.BackgroundColor3 = COLORS.bg_panel
+            frame.AutomaticSize = Enum.AutomaticSize.Y
+            frame.Parent = tabContent
+            makeCorner(frame, 6)
+            makeStroke(frame, COLORS.purple_dark, 1, 0.3)
+
+            local titleLbl = Instance.new("TextLabel")
+            titleLbl.Size = UDim2.new(1, -10, 0, 25)
+            titleLbl.Position = UDim2.new(0, 5, 0, 2)
+            titleLbl.BackgroundTransparency = 1
+            titleLbl.Text = title
+            titleLbl.TextColor3 = COLORS.purple_light
+            titleLbl.Font = Enum.Font.GothamBold
+            titleLbl.TextSize = 13
+            titleLbl.TextXAlignment = Enum.TextXAlignment.Left
+            titleLbl.Parent = frame
+
+            local content = Instance.new("Frame")
+            content.Size = UDim2.new(1, -10, 0, 0)
+            content.Position = UDim2.new(0, 5, 0, 30)
+            content.BackgroundTransparency = 1
+            content.AutomaticSize = Enum.AutomaticSize.Y
+            content.Parent = frame
+
+            local layout = Instance.new("UIListLayout")
+            layout.Padding = UDim.new(0, 4)
+            layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+            layout.Parent = content
+
+            -- GroupBox object with same element creators, but parented to the group's content frame
+            local GroupObj = {}
+
+            function GroupObj:CreateLabel(text)
+                createLabel(content, text)
+            end
+            GroupObj.CreateParagraph = GroupObj.CreateLabel
+
+            function GroupObj:CreateButton(bConfig)
+                createButton(content, bConfig)
+            end
+
+            function GroupObj:CreateToggle(tConfig)
+                return createToggle(content, tConfig)
+            end
+
+            function GroupObj:CreateSlider(sConfig)
+                return createSlider(content, sConfig)
+            end
+
+            function GroupObj:CreateDropdown(dConfig)
+                return createDropdown(content, dConfig)
+            end
+
+            function GroupObj:CreateInput(iConfig)
+                createInput(content, iConfig)
+            end
+
+            function GroupObj:CreateKeybind(kConfig)
+                createKeybind(content, kConfig)
+            end
+
+            return GroupObj
         end
 
         return TabObj
