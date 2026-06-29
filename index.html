@@ -234,7 +234,7 @@
                         <a href="#quick-example" class="heading-anchor">#</a>
                         Quick Example
                     </h2>
-                    <p>Get up and running in seconds. Here's a minimal example that creates a window with a single button:</p>
+                    <p>Get up and running in seconds. Here's a minimal example that creates a window with a button and a GroupBox containing nested elements:</p>
                     <div class="code-block">
                         <div class="code-header">
                             <div class="code-lang">
@@ -261,10 +261,35 @@
 
 <span class="kw">local</span> Tab = Window:<span class="fn">CreateTab</span>(<span class="str">"Main"</span>, <span class="str">"home"</span>)
 
+<span class="co">-- Basic button</span>
 Tab:<span class="fn">CreateButton</span>({
     <span class="prop">Name</span> = <span class="str">"Click Me"</span>,
     <span class="prop">Callback</span> = <span class="kw">function</span>()
         <span class="fn">print</span>(<span class="str">"Button clicked!"</span>)
+    <span class="kw">end</span>
+})
+
+<span class="co">-- NEW: GroupBox with nested elements</span>
+<span class="kw">local</span> group = Tab:<span class="fn">CreateGroupBox</span>({ <span class="prop">Name</span> = <span class="str">"Weapon Settings"</span> })
+
+group:<span class="fn">CreateToggle</span>({
+    <span class="prop">Name</span> = <span class="str">"Auto-Aim"</span>,
+    <span class="prop">Flag</span> = <span class="str">"autoAim"</span>,
+    <span class="prop">CurrentValue</span> = <span class="bool">true</span>
+})
+
+group:<span class="fn">CreateSlider</span>({
+    <span class="prop">Name</span> = <span class="str">"Aim Smoothness"</span>,
+    <span class="prop">Min</span> = <span class="num">1</span>,
+    <span class="prop">Max</span> = <span class="num">10</span>,
+    <span class="prop">Default</span> = <span class="num">5</span>,
+    <span class="prop">ValueName</span> = <span class="str">"%"</span>
+})
+
+group:<span class="fn">CreateButton</span>({
+    <span class="prop">Name</span> = <span class="str">"Equip Loadout"</span>,
+    <span class="prop">Callback</span> = <span class="kw">function</span>()
+        <span class="fn">print</span>(<span class="str">"Loadout equipped!"</span>)
     <span class="kw">end</span>
 })</code></pre>
                     </div>
@@ -286,6 +311,11 @@ Tab:<span class="fn">CreateButton</span>({
                             <div class="feature-card-icon">📑</div>
                             <h3>Tabs</h3>
                             <p>Organize features with icon-supported tabs and smooth transitions.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-card-icon">📦</div>
+                            <h3>GroupBoxes</h3>
+                            <p>Organize elements into titled containers for cleaner layouts — perfect for settings panels.</p>
                         </div>
                         <div class="feature-card">
                             <div class="feature-card-icon">🔘</div>
